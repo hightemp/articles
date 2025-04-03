@@ -1,0 +1,54 @@
+# What is tearing? · reactwg/react-18 · Discussion #69
+Overview
+--------
+
+Tearing is a term traditionally used in graphics programming to refer to a visual inconsistency.
+
+For example, in a video, [screen tearing](https://en.wikipedia.org/wiki/Screen_tearing) is when you see multiple frames in a single screen, which makes the video look “glitchy”. In a user interface, by “tearing” we mean that a UI has shown multiple values for the same state. For example, you may show different prices for the same item in a list, or you submit a form for the wrong price, or even crash when accessing outdated store values.
+
+Since JavaScript is single threaded, this issue generally has not come up in web development. But in React 18, concurrent rendering makes this issue possible because React yields during rendering. This means that when using a concurrent feature like `startTransition` or `Suspense`, React can pause to let other work happen. Between these pauses, updates can sneak in that change the data being used to render, which can cause the UI to show two different values for the same data.
+
+This problem isn’t specific to React, it’s a necessary consequence of concurrency. If you want to be able to interrupt rendering to respond to user input for more responsive experiences, you need to be resilient to the data you’re rendering changing and causing the user interface to tear.
+
+This problem was explained in a talk by [@flarnie](https://github.com/flarnie) [here](https://www.youtube.com/watch?v=V1Ly-8Z1wQA&t=1079s), but we'll provide a brief overview of the problem here by explaining what happens during synchronous rendering, and concurrent rendering.
+
+### Synchronous rendering
+
+Take a look at the figure below.
+
+In the first panel, we begin rendering the React tree. We get to a component that needs to access some external store and get a color value. The external store says that the color is blue, so that component renders blue.
+
+In the second panel, since we’re not concurrently rendering, React continues rendering all of the components without stopping. Since we didn’t stop (or “yield”), then the external store could not have changed. So all of the components get the same value in the external store.
+
+In the third panel, we see that all of the components are rendered as blue, and they all look the same. The UI is always displayed in a consistent state, because everything you see is rendered with the same value everywhere on screen.
+
+Finally, in the fourth panel the store is able to update. This is because React finished, and allowed other work to happen. If the store updates when React isn’t rendering, then the next time React renders the tree, we’ll start over from the first panel, and all of the components will get the same value.
+
+This is why, before concurrent rendering, and in most other UI frameworks, the UI is always rendered consistently. This is the way React works through React 17 and by default in React 18 when you do not use a concurrent feature.
+
+[![](https://user-images.githubusercontent.com/2440089/124805929-23f7e080-df2a-11eb-99c7-776812e89908.png)
+](https://user-images.githubusercontent.com/2440089/124805929-23f7e080-df2a-11eb-99c7-776812e89908.png)
+
+### Concurrent rendering
+
+Most of the time, concurrent rendering results in a consistent UI but there is an edge case that can cause issues under the right conditions. To see what can happen, see the next figure.
+
+We start the first panel the same as before, and render the component blue.
+
+Here’s where we can start to differ.
+
+Since we’re using a concurrent feature, we’re using concurrent rendering and React can stop working before it’s done, “yielding” to other work. This is a huge benefit for responsiveness because the user is able to interact with the page without React blocking them. In this case, say a user clicks a button that changes the store from blue to red. This wouldn’t have even been possible to handle before concurrent rendering. The page would just seem paused to the user, and they couldn’t click anything. But with concurrent rendering React can let the click happen so the page feels fluid and interactive to the user.
+
+A consequence of this feature is that user interactions (or other work like network requests or timeouts) can _change_ the values in the external state that are being used to render what you see on screen. This is the edge case that can cause issues. In the second panel, we see that React has yielded and the external store has changed based on the user interaction.
+
+The issue it that first component has already rendered blue (because that was the value of the store at that time), but any component that renders after this will get the current value, which is now red. In the third panel, that’s exactly what happens. Now, the components that access external state render and get the current value, which is red.
+
+Finally, in the last panel we can see that the component which were previously always consistently blue are now a mix of red and blue. They’re displaying two different values for the same data. This edge case is “tearing”.
+
+[![](https://user-images.githubusercontent.com/2440089/124805949-29edc180-df2a-11eb-9621-4cd9c5d0bc5c.png)
+](https://user-images.githubusercontent.com/2440089/124805949-29edc180-df2a-11eb-9621-4cd9c5d0bc5c.png)
+
+Related posts
+-------------
+
+*   [Concurrent React for Library Maintainers](https://github.com/reactwg/react-18/discussions/70)
