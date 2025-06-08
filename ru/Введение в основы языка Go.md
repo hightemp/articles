@@ -1,6 +1,6 @@
 ### Введение в основы языка Go
 
-**Источник:** https://programmer.ink/think/introduction-to-go-language-foundation.html
+**Оригинал статьи:** https://programmer.ink/think/introduction-to-go-language-foundation.html
 
 **Опубликовано:** warydig, Пн, 07 мар 2022 13:04:59 +0100
 
