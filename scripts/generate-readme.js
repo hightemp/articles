@@ -70,7 +70,23 @@ function scanDirectory(dirPath) {
  */
 function encodeMarkdownPath(filePath) {
     // Разбиваем путь на части и кодируем каждую часть отдельно
-    return filePath.split('/').map(part => encodeURIComponent(part)).join('/');
+    return filePath.split('/').map(part => {
+        // Заменяем проблемные символы перед кодированием
+        let cleanPart = part
+            .replace(/'/g, '%27')      // апостроф
+            .replace(/…/g, '%E2%80%A6') // многоточие
+            .replace(/"/g, '%22')      // кавычки
+            .replace(/"/g, '%E2%80%9C') // левая кавычка
+            .replace(/"/g, '%E2%80%9D') // правая кавычка
+            .replace(/'/g, '%E2%80%98') // левый апостроф
+            .replace(/'/g, '%E2%80%99') // правый апостроф
+            .replace(/—/g, '%E2%80%94') // длинное тире
+            .replace(/–/g, '%E2%80%93') // среднее тире
+            .replace(/\s/g, '%20');     // пробелы
+        
+        // Кодируем остальные символы
+        return encodeURIComponent(decodeURIComponent(cleanPart));
+    }).join('/');
 }
 
 /**

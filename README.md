@@ -172,7 +172,7 @@
 - [TCP/IP in Action | Gerry’s blog](articles/TCP%20IP%20in%20Action%20Gerry%E2%80%99s%20blog.md)
 - [Testing with Go and PostgreSQL: ephemeral DBs (2024) - Michael Stapelberg](articles/Testing%20with%20Go%20and%20PostgreSQL%20ephemeral%20DBs%20(2024)%20-%20Michael%20Stapelberg.md)
 - [The complete guide to dates and times in Go - Honeybadger Developer Blog](articles/The%20complete%20guide%20to%20dates%20and%20times%20in%20Go%20-%20Honeybadger%20Developer%20Blog.md)
-- [The Go low-level calling convention on x86-64 · dr knz @ work](articles/The%20Go%20low-level%20calling%20convention%20on%C2%A0x86-64%20%C2%B7%20dr%20knz%20%40%20work.md)
+- [The Go low-level calling convention on x86-64 · dr knz @ work](articles/The%20Go%20low-level%20calling%20convention%20on%20x86-64%20%C2%B7%20dr%20knz%20%40%20work.md)
 - [The method to epoll’s madness. My previous post covered the… | by Cindy Sridharan | Medium](articles/The%20method%20to%20epoll%E2%80%99s%20madness.%20My%20previous%20post%20covered%20the%E2%80%A6%20by%20Cindy%20Sridharan%20Medium.md)
 - [The sorting problem - by Kanaye Varma](articles/The%20sorting%20problem%20-%20by%20Kanaye%20Varma.md)
 - [There is no pass-by-reference in Go | Dave Cheney](articles/There%20is%20no%20pass-by-reference%20in%20Go%20Dave%20Cheney.md)
