@@ -64,6 +64,16 @@ function scanDirectory(dirPath) {
 }
 
 /**
+ * URL-кодирует путь для использования в markdown ссылках
+ * @param {string} filePath - путь к файлу
+ * @returns {string} - закодированный путь
+ */
+function encodeMarkdownPath(filePath) {
+    // Разбиваем путь на части и кодируем каждую часть отдельно
+    return filePath.split('/').map(part => encodeURIComponent(part)).join('/');
+}
+
+/**
  * Генерирует markdown список статей
  * @param {Array} articles - массив статей
  * @param {string} sectionTitle - заголовок секции
@@ -80,7 +90,8 @@ function generateMarkdownSection(articles, sectionTitle) {
     let markdown = `## ${sectionTitle}\n\n`;
     
     for (const article of articles) {
-        markdown += `- [${article.title}](${article.relativePath})\n`;
+        const encodedPath = encodeMarkdownPath(article.relativePath);
+        markdown += `- [${article.title}](${encodedPath})\n`;
     }
     
     markdown += '\n';
@@ -131,4 +142,4 @@ if (require.main === module) {
     generateReadme();
 }
 
-module.exports = { generateReadme, extractTitle, scanDirectory };
+module.exports = { generateReadme, extractTitle, scanDirectory, encodeMarkdownPath };
